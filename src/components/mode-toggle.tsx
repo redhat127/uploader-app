@@ -14,7 +14,7 @@ export function ModeToggle({
 }: {
   align?: ComponentProps<typeof DropdownMenuContent>['align']
 }) {
-  const { setTheme } = useTheme()
+  const { setTheme, theme } = useTheme()
 
   return (
     <DropdownMenu>
@@ -29,14 +29,23 @@ export function ModeToggle({
         <DropdownMenuItem onClick={() => setTheme('light')}>
           <SunIcon className="h-[1.2rem] w-[1.2rem]" />
           روشن
+          {theme === 'light' && (
+            <span className="bg-foreground ms-auto size-1.5 rounded-full" />
+          )}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')}>
           <MoonIcon className="h-[1.2rem] w-[1.2rem]" />
           تاریک
+          {theme === 'dark' && (
+            <span className="bg-foreground ms-auto size-1.5 rounded-full" />
+          )}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('system')}>
           <MonitorIcon className="h-[1.2rem] w-[1.2rem]" />
           سیستم
+          {theme === 'system' && (
+            <span className="bg-foreground ms-auto size-1.5 rounded-full" />
+          )}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
