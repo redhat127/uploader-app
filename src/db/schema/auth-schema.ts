@@ -1,4 +1,5 @@
-import { sql } from 'drizzle-orm'
+import { sql  } from 'drizzle-orm'
+import type {InferSelectModel} from 'drizzle-orm';
 import {
   boolean,
   index,
@@ -87,3 +88,5 @@ export const verificationTable = pgTable(
   },
   (table) => [index('verification_identifier_idx').on(table.identifier)],
 )
+
+export type UserTableSelect = InferSelectModel<typeof userTable>

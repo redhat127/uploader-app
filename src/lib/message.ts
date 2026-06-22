@@ -9,6 +9,7 @@ export const successMsg = {
   magicLinkSent: 'ایمیل حاوی لینک برای شما ارسال شد.',
   newUserWelcome: 'ثبت نام انجام شد. خوش آمدید!',
   loggedIn: 'شما وارد شدید.',
+  logoutSuccess: 'شما خارج شدید.',
 }
 
 export type SUCCESS_MSG_KEYS = keyof typeof successMsg

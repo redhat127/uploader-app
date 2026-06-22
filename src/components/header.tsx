@@ -4,6 +4,7 @@ import { Logo } from './logo'
 import { ModeToggle } from './mode-toggle'
 import { Button } from './ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
+import { UserDropdown } from './user/user-dropdown'
 
 export const Header = () => {
   const { user } = useRouteContext({ from: '__root__' })
@@ -14,7 +15,9 @@ export const Header = () => {
         <Logo />
       </Link>
       <div className="mr-auto flex items-center gap-2">
-        {user ? null : (
+        {user ? (
+          <UserDropdown user={{ name: user.name, image: user.image || null }} />
+        ) : (
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
