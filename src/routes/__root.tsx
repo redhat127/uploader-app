@@ -4,6 +4,7 @@ import appCss from '../styles.css?url'
 
 import { Body } from '#/components/body'
 import { generateTitle } from '#/lib/utils'
+import { getRootData } from '#/serverfn/__root'
 import type { QueryClient } from '@tanstack/react-query'
 
 interface MyRouterContext {
@@ -32,6 +33,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
   shellComponent: RootDocument,
+  async beforeLoad() {
+    const { user } = await getRootData()
+    return { user }
+  },
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {

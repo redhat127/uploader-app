@@ -7,9 +7,16 @@ import {
 } from '#/db/schema'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { magicLink } from 'better-auth/plugins'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
-import { APP_NAME_EN } from './const'
+import {
+  adjectives,
+  animals,
+  uniqueNamesGenerator,
+} from 'unique-names-generator'
+import { APP_NAME_EN, MAGIC_LINK_EXPIRES_IN_SECONDS } from './const'
 import { env } from './env.server'
+import { sendAuthMail } from './mailer.server'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -31,7 +38,44 @@ export const auth = betterAuth({
     requireEmailVerification: false,
     autoSignIn: false,
   },
-  plugins: [tanstackStartCookies()],
+  plugins: [
+    magicLink({
+      expiresIn: MAGIC_LINK_EXPIRES_IN_SECONDS,
+      storeToken: 'hashed',
+      sendMagicLink: async (data) => {
+        sendAuthMail({
+          to: data.email,
+          magicLink: data.url,
+        }).catch(console.error)
+      },
+    }),
+    tanstackStartCookies(),
+  ],
+  databaseHooks: {
+    user: {
+      create: {
+        async before(user) {
+          let name = ''
+
+          do {
+            name = uniqueNamesGenerator({
+              dictionaries: [adjectives, animals],
+              style: 'lowerCase',
+              separator: '_',
+              length: 2,
+            })
+          } while (name.length < 3 || name.length > 50)
+
+          return {
+            data: {
+              ...user,
+              name,
+            },
+          }
+        },
+      },
+    },
+  },
   advanced: {
     database: { generateId: false },
   },
