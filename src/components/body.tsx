@@ -8,14 +8,16 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import type { ReactNode } from 'react'
 
 import TanStackQueryDevtools from '#/integrations/tanstack-query/devtools'
+import { Header } from './header'
 
-export const BodyLayout = ({ children }: { children: ReactNode }) => {
+export const Body = ({ children }: { children: ReactNode }) => {
   return (
     <body className="w-full overflow-x-hidden bg-orange-100 font-sans! antialiased dark:bg-zinc-900 dark:text-white">
       <DirectionProvider dir="rtl">
         <TooltipProvider>
           <ThemeProvider storageKey="theme" defaultTheme="system">
-            <main>{children}</main>
+            <Header />
+            <main className="mt-(--header-height) p-8">{children}</main>
           </ThemeProvider>
         </TooltipProvider>
         <Toaster

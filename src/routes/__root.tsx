@@ -2,7 +2,7 @@ import { HeadContent, createRootRouteWithContext } from '@tanstack/react-router'
 
 import appCss from '../styles.css?url'
 
-import { BodyLayout } from '#/components/layout/body-layout'
+import { Body } from '#/components/body'
 import { generateTitle } from '#/lib/utils'
 import type { QueryClient } from '@tanstack/react-query'
 
@@ -40,7 +40,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <BodyLayout>{children}</BodyLayout>
+      <Body>{children}</Body>
     </html>
   )
 }
