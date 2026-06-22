@@ -11,7 +11,7 @@ import TanStackQueryDevtools from '#/integrations/tanstack-query/devtools'
 
 export const BodyLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <body className="w-full antialiased overflow-x-hidden font-sans! dark:bg-zinc-900 dark:text-white bg-orange-100">
+    <body className="w-full overflow-x-hidden bg-orange-100 font-sans! antialiased dark:bg-zinc-900 dark:text-white">
       <DirectionProvider dir="rtl">
         <TooltipProvider>
           <ThemeProvider storageKey="theme" defaultTheme="system">

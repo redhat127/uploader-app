@@ -1,12 +1,8 @@
 import { Field, FieldError, FieldLabel } from '#/components/ui/field'
 import { Textarea } from '#/components/ui/textarea'
 import type { ComponentProps } from 'react'
-import {
-  type Control,
-  Controller,
-  type FieldValues,
-  type Path,
-} from 'react-hook-form'
+import { Controller } from 'react-hook-form'
+import type { Control, FieldValues, Path } from 'react-hook-form'
 
 export const TextareaInput = <T extends FieldValues>({
   control,

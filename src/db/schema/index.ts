@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm'
 import { accountTable, sessionTable, userTable } from './auth-schema'
+
 export * from './auth-schema'
 
 export const userRelations = relations(userTable, ({ many }) => ({
