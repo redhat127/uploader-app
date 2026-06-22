@@ -23,7 +23,7 @@ function RouteComponent() {
       >
         <AuthForm />
         <Button type="button" asChild variant="outline" className="mt-8 w-full">
-          <Link to="/" viewTransition>
+          <Link to="/">
             <ChevronLeftIcon />
             بازگشت به خانه
           </Link>

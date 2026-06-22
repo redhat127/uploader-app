@@ -10,7 +10,7 @@ export const Header = () => {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex h-(--header-height) items-center border-b bg-white p-8 dark:bg-transparent">
-      <Link to="/" viewTransition>
+      <Link to="/">
         <Logo />
       </Link>
       <div className="mr-auto flex items-center gap-2">
@@ -23,7 +23,7 @@ export const Header = () => {
                 asChild
                 variant="outline"
               >
-                <Link to="/auth" viewTransition>
+                <Link to="/auth">
                   <UserKeyIcon />
                 </Link>
               </Button>
