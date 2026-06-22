@@ -1,11 +1,20 @@
-import { HeadContent, createRootRouteWithContext } from '@tanstack/react-router'
+import { HeadContent, createRootRouteWithContext, Scripts , Outlet  } from '@tanstack/react-router'
 
 import appCss from '../styles.css?url'
 
-import { Body } from '#/components/body'
 import { generateTitle } from '#/lib/utils'
 import { getRootData } from '#/serverfn/__root'
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+
+import { Header } from '#/components/header'
+import { ThemeProvider } from '#/components/theme-provider'
+import { DirectionProvider } from '#/components/ui/direction'
+import { Toaster } from '#/components/ui/sonner'
+import { TooltipProvider } from '#/components/ui/tooltip'
+import TanStackQueryDevtools from '#/integrations/tanstack-query/devtools'
+import type { ReactNode } from 'react'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -33,19 +42,59 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
   shellComponent: RootDocument,
+  component: RootComponent,
   async beforeLoad() {
     const { user } = await getRootData()
     return { user }
   },
 })
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument({ children }: { children: ReactNode }) {
   return (
     <html lang="fa-IR" dir="rtl" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <Body>{children}</Body>
+      <body className="w-full overflow-x-hidden bg-orange-100 font-sans! antialiased dark:bg-zinc-900 dark:text-white">
+        <DirectionProvider dir="rtl">
+          <TooltipProvider>
+            <ThemeProvider storageKey="theme" defaultTheme="system">
+              {children}
+            </ThemeProvider>
+          </TooltipProvider>
+        </DirectionProvider>
+        <TanStackDevtools
+          config={{
+            position: 'bottom-right',
+          }}
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+            TanStackQueryDevtools,
+          ]}
+        />
+        <Scripts />
+      </body>
     </html>
+  )
+}
+
+function RootComponent() {
+  return (
+    <>
+      <Header />
+      <main className="mt-(--header-height) p-8">
+        <Outlet />
+      </main>
+      <Toaster
+        closeButton
+        duration={8000}
+        position="top-center"
+        expand
+        className="font-sans!"
+      />
+    </>
   )
 }
