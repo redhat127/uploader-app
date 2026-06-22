@@ -21,7 +21,7 @@ try {
 
   const [newUser] = await db
     .insert(userTable)
-    .values({ name: 'ali', email: 'ali@example.com', emailVerified: true })
+    .values({ name: 'علی', email: 'ali@example.com', emailVerified: true })
     .returning({
       id: userTable.id,
       name: userTable.name,
