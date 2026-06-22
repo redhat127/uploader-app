@@ -1,3 +1,4 @@
+import { flushAppRedisKeys } from '#/lib/utils.server'
 import { rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { db } from '.'
@@ -9,6 +10,8 @@ try {
   await rm(join(process.cwd(), 'log', 'email_links.log'), { force: true })
 
   console.log('log/email_links.log removed.')
+
+  await flushAppRedisKeys()
 
   console.log('wiping verification and user tables...')
 

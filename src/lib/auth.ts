@@ -5,6 +5,7 @@ import {
   userTable,
   verificationTable,
 } from '#/db/schema'
+import { redisStorage } from '@better-auth/redis-storage'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { magicLink } from 'better-auth/plugins'
@@ -17,6 +18,7 @@ import {
 import { APP_NAME_EN, MAGIC_LINK_EXPIRES_IN_SECONDS } from './const'
 import { env } from './env.server'
 import { sendAuthMail } from './mailer.server'
+import { redisClient } from './redis.server'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -79,4 +81,13 @@ export const auth = betterAuth({
   advanced: {
     database: { generateId: false },
   },
+  verification: {
+    disableCleanup: false,
+    storeInDatabase: false,
+    storeIdentifier: 'hashed',
+  },
+  secondaryStorage: redisStorage({
+    client: redisClient,
+    keyPrefix: 'better-auth:',
+  }),
 })

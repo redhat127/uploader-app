@@ -10,5 +10,6 @@ export const env = z
       .literal(['development', 'production', 'test'])
       .optional()
       .default('development'),
+    REDIS_URL: z.string().url(),
   })
   .parse(process.env)
