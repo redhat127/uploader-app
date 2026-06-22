@@ -1,4 +1,10 @@
 import { db } from '#/db'
+import {
+  accountTable,
+  sessionTable,
+  userTable,
+  verificationTable,
+} from '#/db/schema'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
@@ -8,6 +14,12 @@ import { env } from './env.server'
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
+    schema: {
+      user: userTable,
+      session: sessionTable,
+      account: accountTable,
+      verification: verificationTable,
+    },
   }),
   appName: APP_NAME_EN,
   baseURL: env.APP_URL,
