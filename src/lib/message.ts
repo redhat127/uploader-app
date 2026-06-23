@@ -10,6 +10,7 @@ export const successMsg = {
   newUserWelcome: 'ثبت نام انجام شد. خوش آمدید!',
   loggedIn: 'شما وارد شدید.',
   logoutSuccess: 'شما خارج شدید.',
+  fileUploaded: 'فایل آپلود شد.',
 }
 
 export type SUCCESS_MSG_KEYS = keyof typeof successMsg

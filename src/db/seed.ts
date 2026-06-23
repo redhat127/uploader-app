@@ -1,10 +1,55 @@
+import { redisClient } from '#/lib/redis.server'
 import { flushAppRedisKeys } from '#/lib/utils.server'
 import { rm } from 'node:fs/promises'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
+import { createInterface } from 'node:readline/promises'
 import { db } from '.'
 import { userTable, verificationTable } from './schema'
 
+if (process.env.NODE_ENV === 'production') {
+  console.error('refusing to run seed script in production.')
+  process.exit(1)
+}
+
+const readlineInterface = createInterface({
+  input: process.stdin,
+  output: process.stdout,
+})
+
 try {
+  if (redisClient.status !== 'ready') {
+    await new Promise((res) => redisClient.once('ready', res))
+  }
+
+  const removeUploadsAnswer = (
+    await readlineInterface.question('remove uploads/ dir? (Y/n) ')
+  )
+    .trim()
+    .toLowerCase()
+
+  if (removeUploadsAnswer !== 'n') {
+    console.log('removing uploads/ dir...')
+
+    await rm(resolve(process.cwd(), 'uploads'), {
+      force: true,
+      recursive: true,
+    })
+
+    console.log('uploads/ dir removed.')
+  }
+
+  const continueAnswer = (
+    await readlineInterface.question(
+      'continue to remove other stuff and seed tables? (Y/n) ',
+    )
+  )
+    .trim()
+    .toLowerCase()
+
+  if (continueAnswer === 'n') {
+    process.exit(0)
+  }
+
   console.log('removing log/email_links.log...')
 
   await rm(join(process.cwd(), 'log', 'email_links.log'), { force: true })
@@ -37,4 +82,6 @@ try {
 } catch (e) {
   console.error(e)
   process.exit(1)
+} finally {
+  readlineInterface.close()
 }

@@ -1,10 +1,6 @@
 import { keyPrefix, redisClient } from './redis.server'
 
 export const flushAppRedisKeys = async () => {
-  if (redisClient.status !== 'ready') {
-    await new Promise((resolve) => redisClient.once('ready', resolve))
-  }
-
   console.log(`[Redis] scanning for keys with prefix "${keyPrefix}"...`)
 
   const keys = await redisClient.keys(`${keyPrefix}*`)
