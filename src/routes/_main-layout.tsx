@@ -1,11 +1,14 @@
 import { Header } from '#/components/header'
 import { Toaster } from '#/components/ui/sonner'
-import { errorMsg, successMsg } from '#/lib/message'
-import type { ERROR_MSG_KEYS, SUCCESS_MSG_KEYS } from '#/lib/message'
+import { useSpToast } from '#/hooks/use-sp-toast'
 import { getUserServerFn } from '#/serverfn/user'
-import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
+import {
+  ClientOnly,
+  createFileRoute,
+  Outlet,
+  useRouter,
+} from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
-import { toast } from 'sonner'
 import z from 'zod'
 
 export const Route = createFileRoute('/_main-layout')({
@@ -22,28 +25,7 @@ export const Route = createFileRoute('/_main-layout')({
 })
 
 function RouteComponent() {
-  const { error, success } = Route.useSearch()
-
-  const navigate = useNavigate()
-
-  const displayedKey = useRef<string | null>(null)
-
-  const key = `${error ?? ''}-${success ?? ''}`
-
-  useEffect(() => {
-    if (!error && !success) return
-    if (displayedKey.current === key) return
-
-    if (error) {
-      toast.error(errorMsg[error as ERROR_MSG_KEYS] || errorMsg['generic'])
-    } else if (success) {
-      toast.success(successMsg[success as SUCCESS_MSG_KEYS])
-    }
-
-    displayedKey.current = key
-
-    navigate({ to: '.', replace: true, search: {} })
-  }, [error, success])
+  useSpToast()
 
   return (
     <>
@@ -58,6 +40,44 @@ function RouteComponent() {
         expand
         className="font-sans!"
       />
+      <ClientOnly fallback={<div></div>}>
+        <Client />
+      </ClientOnly>
     </>
   )
+}
+
+const Client = () => {
+  const router = useRouter()
+
+  const authEventRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    const existing = localStorage.getItem('auth-event')
+    const initial = existing || crypto.randomUUID()
+
+    if (!existing) {
+      localStorage.setItem('auth-event', initial)
+    }
+
+    authEventRef.current = initial
+  }, [])
+
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (!authEventRef.current || e.key !== 'auth-event' || !e.newValue) return
+
+      if (e.newValue !== authEventRef.current) {
+        authEventRef.current = e.newValue
+
+        router.invalidate()
+      }
+    }
+
+    window.addEventListener('storage', handler)
+
+    return () => window.removeEventListener('storage', handler)
+  }, [router])
+
+  return <div></div>
 }
