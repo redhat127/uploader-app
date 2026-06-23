@@ -7,7 +7,7 @@ import { ChevronLeftIcon } from 'lucide-react'
 
 const title = 'ثبت نام یا ورود'
 
-export const Route = createFileRoute('/_sp/_guest/auth')({
+export const Route = createFileRoute('/_main-layout/_guest/auth')({
   component: RouteComponent,
   head() {
     return { meta: [{ title: generateTitle(title) }] }

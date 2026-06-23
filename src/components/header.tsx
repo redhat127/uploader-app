@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 import { UserDropdown } from './user/user-dropdown'
 
 export const Header = () => {
-  const { user } = useRouteContext({ from: '__root__' })
+  const { user } = useRouteContext({ from: '/_main-layout' })
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex h-(--header-height) items-center border-b bg-white p-8 dark:bg-transparent">

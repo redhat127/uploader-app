@@ -21,17 +21,19 @@ export function getRouter() {
     defaultPreloadStaleTime: 0,
     defaultNotFoundComponent() {
       return (
-        <div className="mx-auto mt-16 max-w-sm text-center">
-          <h1 className="mb-2 text-2xl font-bold text-red-600 dark:text-red-500">
-            404 - یافت نشد
-          </h1>
-          <p className="mb-4">صفحه ی مورد نظر یافت نشد.</p>
-          <Button type="button" asChild>
-            <Link to="/">
-              <ChevronLeftIcon />
-              بازگشت به خانه
-            </Link>
-          </Button>
+        <div className="flex min-h-screen w-full flex-col items-center justify-center p-8">
+          <div className="mx-auto w-full max-w-sm text-center">
+            <h1 className="mb-2 text-2xl font-bold text-red-600 dark:text-red-500">
+              404 - یافت نشد
+            </h1>
+            <p className="mb-4">صفحه ی مورد نظر یافت نشد.</p>
+            <Button type="button" asChild>
+              <Link to="/">
+                <ChevronLeftIcon />
+                بازگشت به خانه
+              </Link>
+            </Button>
+          </div>
         </div>
       )
     },
