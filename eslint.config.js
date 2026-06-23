@@ -9,12 +9,19 @@ export default [
       'import/no-cycle': 'off',
       'import/order': 'off',
       'sort-imports': 'off',
+      'perfectionist/sort-imports': 'off',
+      'perfectionist/sort-named-imports': 'off',
       '@typescript-eslint/array-type': 'off',
       '@typescript-eslint/require-await': 'off',
       'pnpm/json-enforce-catalog': 'off',
     },
   },
   {
-    ignores: ['eslint.config.js', 'prettier.config.js', 'src/components/ui/**'],
+    ignores: [
+      'eslint.config.js',
+      'prettier.config.js',
+      'src/components/ui/**',
+      '.output/**/*',
+    ],
   },
 ]

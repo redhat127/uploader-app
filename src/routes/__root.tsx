@@ -15,7 +15,7 @@ import { ThemeProvider } from '#/components/theme-provider'
 import { DirectionProvider } from '#/components/ui/direction'
 import { TooltipProvider } from '#/components/ui/tooltip'
 import TanStackQueryDevtools from '#/integrations/tanstack-query/devtools'
-import type {ReactNode} from 'react';
+import type { ReactNode } from 'react'
 
 interface MyRouterContext {
   queryClient: QueryClient

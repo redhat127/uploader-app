@@ -1,6 +1,7 @@
 import { Header } from '#/components/header'
 import { Toaster } from '#/components/ui/sonner'
-import type { SUCCESS_MSG_KEYS, errorMsg, successMsg, type ERROR_MSG_KEYS  } from '#/lib/message'
+import { errorMsg, successMsg } from '#/lib/message'
+import type { ERROR_MSG_KEYS, SUCCESS_MSG_KEYS } from '#/lib/message'
 import { getUserServerFn } from '#/serverfn/user'
 import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'

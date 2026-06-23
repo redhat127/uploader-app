@@ -1,8 +1,8 @@
 import { TextInput } from '#/components/input/text-input'
 import { FieldGroup } from '#/components/ui/field'
 import { authClient } from '#/lib/auth-client'
-import { errorMsg, successMsg  } from '#/lib/message'
-import type {ERROR_MSG_KEYS} from '#/lib/message';
+import { errorMsg, successMsg } from '#/lib/message'
+import type { ERROR_MSG_KEYS } from '#/lib/message'
 import { emailZodSchema } from '#/zod-schema/email'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'

@@ -1,7 +1,7 @@
 import { DropdownMenuItem } from '#/components/ui/dropdown-menu'
 import { authClient } from '#/lib/auth-client'
-import { errorMsg, successMsg  } from '#/lib/message'
-import type {ERROR_MSG_KEYS} from '#/lib/message';
+import { errorMsg, successMsg } from '#/lib/message'
+import type { ERROR_MSG_KEYS } from '#/lib/message'
 import { useNavigate } from '@tanstack/react-router'
 import { Loader2Icon, LogOutIcon } from 'lucide-react'
 import { useState } from 'react'
