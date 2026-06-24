@@ -6,6 +6,7 @@ export const fileTable = pgTable('file', {
   id: uuid('id')
     .primaryKey()
     .default(sql`uuidv7()`),
+  originalName: text('original_name').notNull(),
   name: text('name').notNull(),
   userId: uuid('user_id')
     .notNull()

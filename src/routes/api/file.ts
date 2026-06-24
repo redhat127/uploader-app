@@ -10,6 +10,7 @@ import { fileTypeFromBuffer } from 'file-type'
 import { nanoid } from 'nanoid'
 import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import sanitize from 'sanitize-filename'
 
 export const Route = createFileRoute('/api/file')({
   server: {
@@ -55,6 +56,7 @@ export const Route = createFileRoute('/api/file')({
           await writeFile(filePath, buffer)
 
           await db.insert(fileTable).values({
+            originalName: sanitize(file.name) || fileName,
             name: fileName,
             mime: detected.mime,
             userId,
