@@ -21,7 +21,11 @@ import { Button } from './ui/button'
 import { Dialog, DialogContent } from './ui/dialog'
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 
-export const Uploader = () => {
+export const Uploader = ({
+  changeTab,
+}: {
+  changeTab: (value: string) => void
+}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [isFileUploading, setIsFileUploading] = useState(false)
 
@@ -52,23 +56,30 @@ export const Uploader = () => {
 
   return (
     <>
-      <div className={cn('mx-auto max-w-3xl space-y-4')}>
+      <div className="space-y-4">
         <div
           className={cn(
-            'group relative h-full w-full overflow-hidden rounded-xl border border-dashed bg-white transition-colors duration-200 dark:bg-transparent',
+            'group relative h-full w-full overflow-hidden rounded-xl border border-dashed bg-white transition-colors duration-200 hover:border-gray-400 dark:bg-transparent',
             {
               'cursor-pointer': !isFileUploading,
               'cursor-not-allowed': isFileUploading,
-              'border-gray-900 dark:border-gray-400': isDragging,
-              'dark:border-border border-gray-400': !isDragging,
+              'border-gray-400': isDragging,
             },
           )}
           onDragEnter={(e) => {
             e.preventDefault()
+
+            if (isFileUploading) return
+
             setIsDragging(true)
           }}
           onDragLeave={(e) => {
+            e.preventDefault()
+
+            if (isFileUploading) return
+
             const related = e.relatedTarget
+
             if (
               !(related instanceof Node) ||
               !e.currentTarget.contains(related)
@@ -78,6 +89,8 @@ export const Uploader = () => {
           }}
           onDrop={(e) => {
             e.preventDefault()
+
+            if (isFileUploading) return
 
             const files = e.dataTransfer.files
 
@@ -141,6 +154,7 @@ export const Uploader = () => {
             clearSelectedFile={clearSelectedFile}
             isFileUploading={isFileUploading}
             changeIsFileUploading={(value) => setIsFileUploading(value)}
+            changeTab={changeTab}
           />
         )}
       </div>
@@ -167,12 +181,14 @@ const SelectedFile = ({
   clearSelectedFile,
   isFileUploading,
   changeIsFileUploading,
+  changeTab,
 }: {
   selectedFile: File
   clearFileInput: () => void
   clearSelectedFile: () => void
   isFileUploading: boolean
   changeIsFileUploading: (value: boolean) => void
+  changeTab: (value: string) => void
 }) => {
   const customAxios = useCustomAxios()
 
@@ -193,6 +209,8 @@ const SelectedFile = ({
       toast.success(successMsg['fileUploaded'])
 
       clearSelectedFile()
+
+      changeTab('my-files')
     } catch {
     } finally {
       changeIsFileUploading(false)
@@ -244,7 +262,7 @@ const FileSelectedDetails = ({
 
     const fileObjectURL = URL.createObjectURL(file)
 
-    setFilePreview(filePreview)
+    setFilePreview(fileObjectURL)
 
     return () => URL.revokeObjectURL(fileObjectURL)
   }, [])
