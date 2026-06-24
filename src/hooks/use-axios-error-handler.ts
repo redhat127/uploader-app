@@ -1,9 +1,9 @@
-import { errorMsg } from '#/lib/message'
 import type { ERROR_MSG_KEYS } from '#/lib/message'
-import { objHasErrorKeyString } from '#/lib/utils'
+import { errorMsg } from '#/lib/message'
+import { objHasErrorKeyString, signalSessionExpired } from '#/lib/utils'
 import { useNavigate } from '@tanstack/react-router'
-import axios from 'axios'
 import type { AxiosError } from 'axios'
+import axios from 'axios'
 import { toast } from 'sonner'
 
 export const useAxiosErrorHandler = () => {
@@ -13,7 +13,7 @@ export const useAxiosErrorHandler = () => {
     if (axios.isCancel(e)) return
 
     if (e.response?.status === 401) {
-      localStorage.setItem('auth-event', crypto.randomUUID())
+      signalSessionExpired()
 
       await navigate({ to: '/auth', replace: true })
 

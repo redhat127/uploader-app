@@ -14,3 +14,8 @@ export const successMsg = {
 }
 
 export type SUCCESS_MSG_KEYS = keyof typeof successMsg
+
+export const warningMsg = {
+  loggedOutByOtherTab: 'شما در تب دیگری از سیستم خارج شدید! دوباره وارد شوید.',
+  sessionExpired: 'نشست شما منقضی شده! دوباره وارد شوید.',
+}

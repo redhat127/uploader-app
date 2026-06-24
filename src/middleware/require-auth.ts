@@ -1,4 +1,5 @@
 import { getSessionUser } from '#/lib/session.server'
+import { signalSessionExpired } from '#/lib/utils'
 import { redirect } from '@tanstack/react-router'
 import { createMiddleware } from '@tanstack/react-start'
 
@@ -24,7 +25,7 @@ export const requireAuthMiddleware = createMiddleware({
       | undefined
 
     if (context?.error === 'user-not-found') {
-      localStorage.setItem('auth-event', crypto.randomUUID())
+      signalSessionExpired()
 
       throw redirect({ to: '/auth', replace: true })
     }

@@ -1,5 +1,7 @@
+import { warningMsg } from '#/lib/message'
 import type { ClassValue } from 'clsx'
 import { clsx } from 'clsx'
+import { toast } from 'sonner'
 import { twMerge } from 'tailwind-merge'
 import { APP_NAME_FARSI } from './const'
 
@@ -20,4 +22,12 @@ export const objHasErrorKeyString = (
     'error' in obj &&
     typeof obj.error === 'string'
   )
+}
+
+export function signalSessionExpired() {
+  if (typeof window === 'undefined') return
+
+  localStorage.setItem('auth-event', crypto.randomUUID())
+
+  toast.warning(warningMsg['sessionExpired'])
 }

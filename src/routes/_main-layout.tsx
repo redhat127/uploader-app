@@ -3,15 +3,18 @@ import { Header } from '#/components/header'
 import { NotFound } from '#/components/not-found'
 import { Toaster } from '#/components/ui/sonner'
 import { useSpToast } from '#/hooks/use-sp-toast'
+import { warningMsg } from '#/lib/message'
 import { getUserServerFn } from '#/serverfn/user'
 import {
   ClientOnly,
   createFileRoute,
   Outlet,
+  useRouteContext,
   useRouter,
 } from '@tanstack/react-router'
-import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
+import { useEffect, useRef } from 'react'
+import { toast } from 'sonner'
 import z from 'zod'
 
 export const Route = createFileRoute('/_main-layout')({
@@ -92,11 +95,17 @@ const Client = () => {
     authEventRef.current = initial
   }, [])
 
+  const { user } = useRouteContext({ from: '/_main-layout' })
+
   useEffect(() => {
     const handler = (e: StorageEvent) => {
       if (!authEventRef.current || e.key !== 'auth-event' || !e.newValue) return
 
       if (e.newValue !== authEventRef.current) {
+        if (user?.id) {
+          toast.warning(warningMsg['loggedOutByOtherTab'])
+        }
+
         authEventRef.current = e.newValue
 
         router.invalidate()
@@ -106,7 +115,7 @@ const Client = () => {
     window.addEventListener('storage', handler)
 
     return () => window.removeEventListener('storage', handler)
-  }, [router])
+  }, [router, user?.id])
 
   return <div></div>
 }
