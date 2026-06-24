@@ -1,10 +1,11 @@
 import { errorMsg } from '#/lib/message'
+import { ensureUploadsDirExists } from '#/lib/utils.server'
 import { requireAuthApiMiddleware } from '#/middleware/require-auth'
 import { fileZodSchema } from '#/zod-schema/file'
 import { createFileRoute } from '@tanstack/react-router'
 import { fileTypeFromBuffer } from 'file-type'
 import { nanoid } from 'nanoid'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 export const Route = createFileRoute('/api/file')({
@@ -37,8 +38,7 @@ export const Route = createFileRoute('/api/file')({
             )
           }
 
-          const uploadDir = resolve(process.cwd(), 'uploads')
-          await mkdir(uploadDir, { recursive: true })
+          const { uploadDir } = await ensureUploadsDirExists()
 
           const fileName = `${nanoid()}.${detected.ext}`
 

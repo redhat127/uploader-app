@@ -1,3 +1,5 @@
+import { mkdir } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import { keyPrefix, redisClient } from './redis.server'
 
 export const flushAppRedisKeys = async () => {
@@ -25,4 +27,12 @@ export const flushAppRedisKeys = async () => {
   const deletedKeysCount = await redisClient.del(...strippedKeys)
 
   console.log(`[Redis] deleted ${deletedKeysCount} key(s).`)
+}
+
+export const ensureUploadsDirExists = async () => {
+  const uploadDir = resolve(process.cwd(), 'uploads')
+
+  await mkdir(uploadDir, { recursive: true })
+
+  return { uploadDir }
 }
