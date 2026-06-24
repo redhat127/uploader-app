@@ -1,4 +1,6 @@
+import { ErrorComponent } from '#/components/error-component'
 import { Header } from '#/components/header'
+import { NotFound } from '#/components/not-found'
 import { Toaster } from '#/components/ui/sonner'
 import { useSpToast } from '#/hooks/use-sp-toast'
 import { getUserServerFn } from '#/serverfn/user'
@@ -9,6 +11,7 @@ import {
   useRouter,
 } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
+import type { ReactNode } from 'react'
 import z from 'zod'
 
 export const Route = createFileRoute('/_main-layout')({
@@ -22,17 +25,43 @@ export const Route = createFileRoute('/_main-layout')({
 
     return { user }
   },
+  notFoundComponent() {
+    return (
+      <Wrapper>
+        <div className="mt-16">
+          <NotFound />
+        </div>
+      </Wrapper>
+    )
+  },
+  errorComponent({ reset }) {
+    return (
+      <Wrapper>
+        <div className="mt-16">
+          <ErrorComponent reset={reset} />
+        </div>
+      </Wrapper>
+    )
+  },
 })
+
+const Wrapper = ({ children }: { children: ReactNode }) => {
+  return (
+    <>
+      <Header />
+      <main className="mt-(--header-height) p-8">{children}</main>
+    </>
+  )
+}
 
 function RouteComponent() {
   useSpToast()
 
   return (
     <>
-      <Header />
-      <main className="mt-(--header-height) p-8">
+      <Wrapper>
         <Outlet />
-      </main>
+      </Wrapper>
       <Toaster
         closeButton
         duration={8000}
