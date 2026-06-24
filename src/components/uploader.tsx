@@ -10,6 +10,7 @@ import {
   ChevronLeftIcon,
   EyeIcon,
   Loader2Icon,
+  PlusIcon,
   TrashIcon,
   UploadCloudIcon,
 } from 'lucide-react'
@@ -36,17 +37,59 @@ export const Uploader = () => {
     setSelectedFile(null)
   }
 
+  const validateAndSelectFile = (file: File) => {
+    const { error, data } = fileZodSchema.safeParse(file)
+
+    if (error) {
+      toast.error(error.issues[0].message)
+      return
+    }
+
+    setSelectedFile(data)
+  }
+
+  const [isDragging, setIsDragging] = useState(false)
+
   return (
     <>
       <div className={cn('mx-auto max-w-3xl space-y-4')}>
         <div
           className={cn(
-            'group dark:border-border h-full w-full overflow-hidden rounded-xl border border-dashed border-gray-400 bg-white dark:bg-transparent',
+            'group relative h-full w-full overflow-hidden rounded-xl border border-dashed bg-white transition-colors duration-200 dark:bg-transparent',
             {
               'cursor-pointer': !isFileUploading,
               'cursor-not-allowed': isFileUploading,
+              'border-gray-900 dark:border-gray-400': isDragging,
+              'dark:border-border border-gray-400': !isDragging,
             },
           )}
+          onDragEnter={(e) => {
+            e.preventDefault()
+            setIsDragging(true)
+          }}
+          onDragLeave={(e) => {
+            const related = e.relatedTarget
+            if (
+              !(related instanceof Node) ||
+              !e.currentTarget.contains(related)
+            ) {
+              setIsDragging(false)
+            }
+          }}
+          onDrop={(e) => {
+            e.preventDefault()
+
+            const files = e.dataTransfer.files
+
+            if (files.length) {
+              validateAndSelectFile(files[0])
+            }
+
+            setIsDragging(false)
+          }}
+          onDragOver={(e) => {
+            e.preventDefault()
+          }}
         >
           <div
             className="flex h-full w-full flex-col items-center justify-center gap-4 p-4 text-center"
@@ -76,6 +119,20 @@ export const Uploader = () => {
               </div>
             </div>
           </div>
+          <div
+            className={cn(
+              'absolute inset-0 z-50 flex h-full w-full flex-col items-center justify-center gap-4 bg-white text-center text-sm transition-all duration-200 dark:bg-zinc-900',
+              {
+                'invisible opacity-0': !isDragging,
+                'visible opacity-95': isDragging,
+              },
+            )}
+          >
+            <div className="bg-primary/20 -order-1 rounded-full p-4">
+              <PlusIcon className="text-sidebar-primary" />
+            </div>
+            <p>فایل را اینجا رها کنید.</p>
+          </div>
         </div>
         {selectedFile && (
           <SelectedFile
@@ -96,14 +153,7 @@ export const Uploader = () => {
 
           if (!file) return
 
-          const { error, data } = fileZodSchema.safeParse(file)
-
-          if (error) {
-            toast.error(error.issues[0].message)
-            return
-          }
-
-          setSelectedFile(data)
+          validateAndSelectFile(file)
         }}
         className="sr-only"
       />
@@ -201,7 +251,7 @@ const FileSelectedDetails = ({
 
   return (
     <>
-      <div className="xs:flex-row flex flex-col items-center gap-4 rounded-xl border p-4">
+      <div className="xs:flex-row flex flex-col items-center gap-4 rounded-xl border bg-white p-4 dark:bg-zinc-900">
         <p className="text-muted-foreground line-clamp-1 flex-1 text-sm">
           {file.name}
         </p>
