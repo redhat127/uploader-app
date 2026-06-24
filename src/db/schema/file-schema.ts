@@ -10,7 +10,7 @@ export const fileTable = pgTable('file', {
   userId: uuid('user_id')
     .notNull()
     .references(() => userTable.id, { onDelete: 'cascade' }),
-  type: text('type').notNull(),
+  mime: text('mime').notNull(),
   sizeKB: text('size_kb').notNull(),
   url: text('url').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
