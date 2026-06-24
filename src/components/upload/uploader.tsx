@@ -1,3 +1,11 @@
+import { Badge } from '#/components/ui/badge'
+import { Button } from '#/components/ui/button'
+import { Dialog, DialogContent } from '#/components/ui/dialog'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '#/components/ui/tooltip'
 import { useAxiosErrorHandler } from '#/hooks/use-axios-error-handler'
 import { successMsg } from '#/lib/message'
 import { cn } from '#/lib/utils'
@@ -19,10 +27,6 @@ import {
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { Badge } from './ui/badge'
-import { Button } from './ui/button'
-import { Dialog, DialogContent } from './ui/dialog'
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 
 export const Uploader = ({
   changeTab,

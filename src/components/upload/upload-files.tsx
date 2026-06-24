@@ -1,15 +1,10 @@
 import { MyFiles } from '#/components/file/my-files'
 import { CardLayout } from '#/components/layout/card-layout'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/components/ui/tabs'
-import { Uploader } from '#/components/uploader'
-import { createFileRoute } from '@tanstack/react-router'
+import { Uploader } from '#/components/upload/uploader'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/_main-layout/_auth/')({
-  component: Home,
-})
-
-function Home() {
+export const UploadFiles = () => {
   const [tab, setTab] = useState('my-files')
 
   return (
