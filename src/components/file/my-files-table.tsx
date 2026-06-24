@@ -9,9 +9,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { CopyIcon, Loader2Icon, TrashIcon } from 'lucide-react'
+import { CopyIcon, Loader2Icon } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { DeleteFile } from './delete-file'
 
 export const MyFilesTable = ({ files }: { files: File[] }) => {
   return (
@@ -95,9 +96,7 @@ const MyFilesTableBodyRow = ({ file }: { file: File }) => {
         </Button>
       </TableCell>
       <TableCell className="text-center">
-        <Button type="button" variant="destructive" size="icon">
-          <TrashIcon />
-        </Button>
+        <DeleteFile fileName={file.name} />
       </TableCell>
     </TableRow>
   )

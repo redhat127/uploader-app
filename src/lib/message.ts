@@ -11,6 +11,7 @@ export const successMsg = {
   loggedIn: 'شما وارد شدید.',
   logoutSuccess: 'شما خارج شدید.',
   fileUploaded: 'فایل آپلود شد.',
+  fileDeleted: 'فایل حذف شد.',
 }
 
 export type SUCCESS_MSG_KEYS = keyof typeof successMsg

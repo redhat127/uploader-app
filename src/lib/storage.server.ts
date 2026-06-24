@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 export const validStorageName = ['local', 's3'] as const
@@ -24,4 +24,10 @@ export async function readStoredFile(name: string): Promise<Buffer | null> {
   } catch {
     return null
   }
+}
+
+export async function deleteStoredFile(name: string): Promise<void> {
+  const { uploadDir } = await ensureUploadsDirExists()
+
+  await rm(resolve(uploadDir, name), { force: true, recursive: true })
 }
