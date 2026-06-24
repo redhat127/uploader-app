@@ -1,3 +1,4 @@
+import { MyFiles } from '#/components/file/my-files'
 import { CardLayout } from '#/components/layout/card-layout'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/components/ui/tabs'
 import { Uploader } from '#/components/uploader'
@@ -23,7 +24,7 @@ function Home() {
             title={<h1>فایل های من</h1>}
             description="در اینجا می توانید فایل های خود را مشاهده کنید."
           >
-            <div></div>
+            <MyFiles />
           </CardLayout>
         </TabsContent>
         <TabsContent value="upload-file">

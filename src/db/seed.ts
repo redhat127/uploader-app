@@ -4,7 +4,7 @@ import { rm } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { createInterface } from 'node:readline/promises'
 import { db } from '.'
-import { userTable, verificationTable } from './schema'
+import { fileTable, userTable, verificationTable } from './schema'
 
 if (process.env.NODE_ENV === 'production') {
   console.error('refusing to run seed script in production.')
@@ -21,13 +21,15 @@ try {
     await new Promise((res) => redisClient.once('ready', res))
   }
 
-  const removeUploadsAnswer = (
-    await readlineInterface.question('remove uploads/ dir? (Y/n) ')
+  const wipeFileTableAndRemoveUploadsDir = (
+    await readlineInterface.question(
+      'wipe file table and remove uploads/ dir? (y/n) ',
+    )
   )
     .trim()
     .toLowerCase()
 
-  if (removeUploadsAnswer !== 'n') {
+  if (wipeFileTableAndRemoveUploadsDir === 'y') {
     console.log('removing uploads/ dir...')
 
     await rm(resolve(process.cwd(), 'uploads'), {
@@ -36,17 +38,23 @@ try {
     })
 
     console.log('uploads/ dir removed.')
+
+    console.log('wiping file table...')
+
+    await db.delete(fileTable)
+
+    console.log('file table wiped.')
   }
 
   const continueAnswer = (
     await readlineInterface.question(
-      'continue to remove other stuff and seed tables? (Y/n) ',
+      'continue to remove other stuff and seed tables? (y/n) ',
     )
   )
     .trim()
     .toLowerCase()
 
-  if (continueAnswer === 'n') {
+  if (continueAnswer !== 'y') {
     process.exit(0)
   }
 

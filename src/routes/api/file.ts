@@ -1,3 +1,6 @@
+import { db } from '#/db'
+import { fileTable } from '#/db/schema'
+import { env } from '#/lib/env.server'
 import { errorMsg } from '#/lib/message'
 import { ensureUploadsDirExists } from '#/lib/utils.server'
 import { requireAuthApiMiddleware } from '#/middleware/require-auth'
@@ -12,7 +15,12 @@ export const Route = createFileRoute('/api/file')({
   server: {
     middleware: [requireAuthApiMiddleware],
     handlers: {
-      async POST({ request }) {
+      async POST({
+        request,
+        context: {
+          user: { id: userId },
+        },
+      }) {
         try {
           const formData = await request.formData()
 
@@ -46,7 +54,15 @@ export const Route = createFileRoute('/api/file')({
 
           await writeFile(filePath, buffer)
 
-          return Response.json({ fileName }, { status: 201 })
+          await db.insert(fileTable).values({
+            name: fileName,
+            mime: detected.mime,
+            userId,
+            url: new URL(`/api/file/${fileName}`, env.APP_URL).toString(),
+            sizeBytes: BigInt(file.size),
+          })
+
+          return Response.json({}, { status: 201 })
         } catch {
           return Response.json({ error: errorMsg['generic'] }, { status: 500 })
         }

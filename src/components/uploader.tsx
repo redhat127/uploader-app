@@ -1,4 +1,4 @@
-import { useCustomAxios } from '#/hooks/use-custom-axios'
+import { useAxiosErrorHandler } from '#/hooks/use-axios-error-handler'
 import { successMsg } from '#/lib/message'
 import { cn } from '#/lib/utils'
 import {
@@ -6,6 +6,9 @@ import {
   maxFileSizeMB,
   readableValidFileTypes,
 } from '#/zod-schema/file'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import type { AxiosError } from 'axios'
+import axios from 'axios'
 import {
   ChevronLeftIcon,
   EyeIcon,
@@ -27,7 +30,6 @@ export const Uploader = ({
   changeTab: (value: string) => void
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [isFileUploading, setIsFileUploading] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
@@ -53,6 +55,46 @@ export const Uploader = ({
   }
 
   const [isDragging, setIsDragging] = useState(false)
+
+  const { handler: axiosErrorHandler } = useAxiosErrorHandler()
+
+  const queryClient = useQueryClient()
+
+  const abortController = useRef<AbortController | null>(null)
+
+  useEffect(() => {
+    return () => abortController.current?.abort()
+  }, [])
+
+  const mutate = useMutation<{}, AxiosError, { formData: FormData }>({
+    onMutate() {
+      abortController.current = new AbortController()
+    },
+    async mutationFn({ formData }) {
+      const { data } = await axios.post<{}>('/api/file', formData, {
+        signal: abortController.current?.signal,
+      })
+
+      return data
+    },
+    onSuccess() {
+      toast.success(successMsg['fileUploaded'])
+
+      clearSelectedFile()
+
+      queryClient.invalidateQueries({
+        queryKey: ['my-files'],
+        exact: true,
+      })
+
+      changeTab('my-files')
+    },
+    async onError(e) {
+      await axiosErrorHandler(e)
+    },
+  })
+
+  const isFileUploading = mutate.isPending
 
   return (
     <>
@@ -152,9 +194,14 @@ export const Uploader = ({
             selectedFile={selectedFile}
             clearFileInput={clearFileInput}
             clearSelectedFile={clearSelectedFile}
+            startUpload={() => {
+              const formData = new FormData()
+
+              formData.set('file', selectedFile)
+
+              mutate.mutate({ formData })
+            }}
             isFileUploading={isFileUploading}
-            changeIsFileUploading={(value) => setIsFileUploading(value)}
-            changeTab={changeTab}
           />
         )}
       </div>
@@ -179,44 +226,15 @@ const SelectedFile = ({
   selectedFile,
   clearFileInput,
   clearSelectedFile,
+  startUpload,
   isFileUploading,
-  changeIsFileUploading,
-  changeTab,
 }: {
   selectedFile: File
   clearFileInput: () => void
   clearSelectedFile: () => void
+  startUpload: () => void
   isFileUploading: boolean
-  changeIsFileUploading: (value: boolean) => void
-  changeTab: (value: string) => void
 }) => {
-  const customAxios = useCustomAxios()
-
-  const startUpload = async () => {
-    try {
-      changeIsFileUploading(true)
-
-      const formData = new FormData()
-
-      formData.set('file', selectedFile)
-
-      const {
-        data: { fileName },
-      } = await customAxios.post<{ fileName: string }>('/api/file', formData)
-
-      console.log(fileName)
-
-      toast.success(successMsg['fileUploaded'])
-
-      clearSelectedFile()
-
-      changeTab('my-files')
-    } catch {
-    } finally {
-      changeIsFileUploading(false)
-    }
-  }
-
   return (
     <div className="space-y-4">
       <FileSelectedDetails
@@ -232,7 +250,9 @@ const SelectedFile = ({
         type="button"
         disabled={isFileUploading}
         className="w-full"
-        onClick={startUpload}
+        onClick={() => {
+          startUpload()
+        }}
       >
         {isFileUploading ? (
           <Loader2Icon className="animate-spin" />

@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { bigint, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { userTable } from './auth-schema'
 
 export const fileTable = pgTable('file', {
@@ -11,7 +11,7 @@ export const fileTable = pgTable('file', {
     .notNull()
     .references(() => userTable.id, { onDelete: 'cascade' }),
   mime: text('mime').notNull(),
-  sizeKB: text('size_kb').notNull(),
+  sizeBytes: bigint('size_bytes', { mode: 'bigint' }).notNull(),
   url: text('url').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
