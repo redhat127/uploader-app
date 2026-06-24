@@ -1,6 +1,7 @@
 import type { ERROR_MSG_KEYS } from '#/lib/message'
 import { errorMsg } from '#/lib/message'
-import { objHasErrorKeyString, signalSessionExpired } from '#/lib/utils'
+import { signalSessionExpired } from '#/lib/session'
+import { objHasErrorKeyString } from '#/lib/utils'
 import { useNavigate } from '@tanstack/react-router'
 import type { AxiosError } from 'axios'
 import axios from 'axios'

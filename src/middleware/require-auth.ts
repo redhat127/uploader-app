@@ -1,5 +1,5 @@
+import { signalSessionExpired } from '#/lib/session'
 import { getSessionUser } from '#/lib/session.server'
-import { signalSessionExpired } from '#/lib/utils'
 import { redirect } from '@tanstack/react-router'
 import { createMiddleware } from '@tanstack/react-start'
 
