@@ -8,12 +8,12 @@ export const fileTable = pgTable('file', {
     .default(sql`uuidv7()`),
   originalName: text('original_name').notNull(),
   name: text('name').notNull(),
+  storage: text('storage').notNull().default('local'),
   userId: uuid('user_id')
     .notNull()
     .references(() => userTable.id, { onDelete: 'cascade' }),
   mime: text('mime').notNull(),
   sizeBytes: bigint('size_bytes', { mode: 'bigint' }).notNull(),
-  url: text('url').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()

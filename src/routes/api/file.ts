@@ -1,15 +1,12 @@
 import { db } from '#/db'
 import { fileTable } from '#/db/schema'
-import { env } from '#/lib/env.server'
 import { errorMsg } from '#/lib/message'
-import { ensureUploadsDirExists } from '#/lib/utils.server'
+import { saveFile } from '#/lib/storage.server'
 import { requireAuthApiMiddleware } from '#/middleware/require-auth'
 import { fileZodSchema } from '#/zod-schema/file'
 import { createFileRoute } from '@tanstack/react-router'
 import { fileTypeFromBuffer } from 'file-type'
 import { nanoid } from 'nanoid'
-import { writeFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
 import sanitize from 'sanitize-filename'
 
 export const Route = createFileRoute('/api/file')({
@@ -47,20 +44,16 @@ export const Route = createFileRoute('/api/file')({
             )
           }
 
-          const { uploadDir } = await ensureUploadsDirExists()
-
           const fileName = `${nanoid()}.${detected.ext}`
 
-          const filePath = resolve(uploadDir, fileName)
-
-          await writeFile(filePath, buffer)
+          await saveFile(fileName, buffer)
 
           await db.insert(fileTable).values({
             originalName: sanitize(file.name) || fileName,
             name: fileName,
             mime: detected.mime,
+            storage: 'local',
             userId,
-            url: new URL(`/api/file/${fileName}`, env.APP_URL).toString(),
             sizeBytes: BigInt(file.size),
           })
 
