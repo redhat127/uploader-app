@@ -1,4 +1,5 @@
 import z from 'zod'
+import { validStorageName } from './storage.server'
 
 export const env = z
   .object({
@@ -11,5 +12,6 @@ export const env = z
       .optional()
       .default('development'),
     REDIS_URL: z.string().url(),
+    STORAGE_NAME: z.literal(validStorageName),
   })
   .parse(process.env)

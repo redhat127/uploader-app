@@ -1,5 +1,6 @@
 import { db } from '#/db'
 import { fileTable } from '#/db/schema'
+import { env } from '#/lib/env.server'
 import { errorMsg } from '#/lib/message'
 import { saveFile } from '#/lib/storage.server'
 import { requireAuthApiMiddleware } from '#/middleware/require-auth'
@@ -52,7 +53,7 @@ export const Route = createFileRoute('/api/file')({
             originalName: sanitize(file.name) || fileName,
             name: fileName,
             mime: detected.mime,
-            storage: 'local',
+            storage: env.STORAGE_NAME,
             userId,
             sizeBytes: BigInt(file.size),
           })

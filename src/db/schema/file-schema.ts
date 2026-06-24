@@ -1,3 +1,4 @@
+import { validStorageName } from '#/lib/storage.server'
 import { sql } from 'drizzle-orm'
 import { bigint, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { userTable } from './auth-schema'
@@ -8,7 +9,7 @@ export const fileTable = pgTable('file', {
     .default(sql`uuidv7()`),
   originalName: text('original_name').notNull(),
   name: text('name').notNull(),
-  storage: text('storage').notNull().default('local'),
+  storage: text('storage', { enum: validStorageName }).notNull(),
   userId: uuid('user_id')
     .notNull()
     .references(() => userTable.id, { onDelete: 'cascade' }),

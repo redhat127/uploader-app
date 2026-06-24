@@ -1,6 +1,8 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
+export const validStorageName = ['local', 's3'] as const
+
 export const ensureUploadsDirExists = async () => {
   const uploadDir = resolve(process.cwd(), 'uploads')
 
