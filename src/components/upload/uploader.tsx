@@ -289,7 +289,7 @@ const FileSelectedDetails = ({
     setFilePreview(fileObjectURL)
 
     return () => URL.revokeObjectURL(fileObjectURL)
-  }, [])
+  }, [file])
 
   return (
     <>

@@ -8,7 +8,7 @@ export const UploadFiles = () => {
   const [tab, setTab] = useState('my-files')
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
+    <div className="mx-auto max-w-7xl space-y-8">
       <Tabs value={tab} onValueChange={(e) => setTab(e)}>
         <TabsList>
           <TabsTrigger value="my-files">فایل های من</TabsTrigger>

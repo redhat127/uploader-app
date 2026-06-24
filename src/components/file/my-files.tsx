@@ -2,16 +2,18 @@ import { getMyFilesServerFn } from '#/serverfn/file'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useServerFn } from '@tanstack/react-start'
 import { Suspense } from 'react'
+import { MyFilesTable } from './my-files-table'
+import { MyFilesTableSkeleton } from './my-files-table-skeleton'
 
 export const MyFiles = () => {
   return (
-    <Suspense fallback={<div></div>}>
-      <MyFilesSuspense />
+    <Suspense fallback={<MyFilesTableSkeleton />}>
+      <MyFilesTableSuspense />
     </Suspense>
   )
 }
 
-const MyFilesSuspense = () => {
+const MyFilesTableSuspense = () => {
   const getMyFilesSf = useServerFn(getMyFilesServerFn)
 
   const { data: myFiles } = useSuspenseQuery({
@@ -25,7 +27,9 @@ const MyFilesSuspense = () => {
 
   if (!myFiles) return
 
-  return myFiles.length ? null : (
-    <p className="text-sm italic">هیچ فایلی یافت نشد.</p>
+  return myFiles.length ? (
+    <MyFilesTable files={myFiles} />
+  ) : (
+    <p className="text-muted-foreground italic">هیچ فایلی یافت نشد.</p>
   )
 }
