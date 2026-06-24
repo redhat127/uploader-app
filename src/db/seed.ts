@@ -1,5 +1,4 @@
-import { redisClient } from '#/lib/redis.server'
-import { flushAppRedisKeys } from '#/lib/utils.server'
+import { flushAppRedisKeys, redisClient } from '#/lib/redis.server'
 import { rm } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { createInterface } from 'node:readline/promises'
