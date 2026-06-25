@@ -95,3 +95,21 @@ export const persianFileDate = (fileDate: number | Date): string => {
 
   return `${date.toLocaleDateString('fa-IR')} ، ${date.toLocaleTimeString('fa-IR')}`
 }
+
+export const createDownloadLink = ({
+  fileName,
+  fileOriginalName,
+}: {
+  fileName: string
+  fileOriginalName: string
+}) => {
+  const url = new URL(`/api/file/${fileName}`, window.location.href)
+  url.searchParams.set('download', '')
+
+  const link = document.createElement('a')
+  link.href = url.toString()
+  link.download = fileOriginalName
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}

@@ -16,6 +16,10 @@ import {
 import type { File } from '#/serverfn/file'
 import { EllipsisVertical } from 'lucide-react'
 import { DeleteFileBtn, DeleteFileDropdownMenuItem } from './delete-file-btn'
+import {
+  DownloadFileBtn,
+  DownloadFileDropdownMenuItem,
+} from './download-file-btn'
 import { FileDetailsBtn, FileDetailsDropdownMenuItem } from './file-details'
 
 export const MyFilesTable = ({ files }: { files: File[] }) => {
@@ -41,6 +45,9 @@ const MyFilesTableHeader = () => {
         </TableHead>
         <TableHead className="hidden w-20 text-center sm:table-cell">
           کپی آدرس
+        </TableHead>
+        <TableHead className="hidden w-14 text-center sm:table-cell">
+          دانلود
         </TableHead>
         <TableHead className="hidden w-14 text-center sm:table-cell">
           حذف
@@ -81,6 +88,12 @@ const MyFilesTableBodyRow = ({ file }: { file: File }) => {
         <CopyBtn text={textForCopyBtn} noTooltip />
       </TableCell>
       <TableCell className="hidden text-center sm:table-cell">
+        <DownloadFileBtn
+          fileName={file.name}
+          fileOriginalName={file.originalName}
+        />
+      </TableCell>
+      <TableCell className="hidden text-center sm:table-cell">
         <DeleteFileBtn fileName={file.name} />
       </TableCell>
       <TableCell className="text-center sm:hidden">
@@ -93,6 +106,12 @@ const MyFilesTableBodyRow = ({ file }: { file: File }) => {
               {imageDimensions}
             </FileDetailsDropdownMenuItem>
             <CopyBtnDropdownMenuItem text={textForCopyBtn} label="کپی آدرس" />
+            <DownloadFileDropdownMenuItem
+              fileName={file.name}
+              fileOriginalName={file.originalName}
+            >
+              دانلود
+            </DownloadFileDropdownMenuItem>
             <DeleteFileDropdownMenuItem fileName={file.name} />
           </DropdownMenuContent>
         </DropdownMenu>

@@ -12,7 +12,7 @@ export const Route = createFileRoute('/api/file_/$fileName')({
   server: {
     handlers({ createHandlers }) {
       return createHandlers({
-        async GET({ params }) {
+        async GET({ params, request }) {
           try {
             const { error, data: fileName } = filenameSchema.safeParse(
               params.fileName,
@@ -36,11 +36,16 @@ export const Route = createFileRoute('/api/file_/$fileName')({
               return Response.json({ error: 'فایل یافت نشد.' }, { status: 404 })
             }
 
+            const wantsDownload = new URL(request.url).searchParams.has(
+              'download',
+            )
+
             return new Response(new Uint8Array(buffer), {
               headers: {
                 'content-type': file.mime,
                 'content-disposition': buildContentDisposition(
                   file.originalName,
+                  wantsDownload ? 'attachment' : 'inline',
                 ),
               },
             })

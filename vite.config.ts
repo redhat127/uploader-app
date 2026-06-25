@@ -23,6 +23,11 @@ const config = defineConfig({
             method: 'DELETE',
             handler: resolvePath(nitroRuntimeDir, 'internal/vite/ssr-renderer'),
           })
+          n.options.handlers.push({
+            route: '/api/file/**',
+            method: 'GET',
+            handler: resolvePath(nitroRuntimeDir, 'internal/vite/ssr-renderer'),
+          })
         },
       },
     }),
