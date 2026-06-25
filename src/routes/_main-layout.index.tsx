@@ -16,7 +16,13 @@ function Home() {
   const { user } = useRouteContext({ from: '/_main-layout' })
 
   return user ? (
-    <ClientOnly fallback={<div></div>}>
+    <ClientOnly
+      fallback={
+        <p className="text-muted-foreground mx-auto max-w-7xl text-sm">
+          در حال بارگذاری...
+        </p>
+      }
+    >
       <UploadFiles />
     </ClientOnly>
   ) : (
