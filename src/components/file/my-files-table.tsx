@@ -105,7 +105,9 @@ const MyFilesTableBodyRow = ({ file }: { file: File }) => {
             <FileDetailsDropdownMenuItem {...sharedFileDetailsProps}>
               {imageDimensions}
             </FileDetailsDropdownMenuItem>
-            <CopyBtnDropdownMenuItem text={textForCopyBtn} label="کپی آدرس" />
+            <CopyBtnDropdownMenuItem text={textForCopyBtn}>
+              کپی آدرس
+            </CopyBtnDropdownMenuItem>
             <DownloadFileDropdownMenuItem
               fileName={file.name}
               fileOriginalName={file.originalName}

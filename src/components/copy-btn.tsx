@@ -1,6 +1,7 @@
 import { Button } from '#/components/ui/button'
 import { CopyIcon, Loader2Icon } from 'lucide-react'
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 import { DropdownMenuItem } from './ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
@@ -61,17 +62,17 @@ export const CopyBtn = ({
 
 export const CopyBtnDropdownMenuItem = ({
   text,
-  label,
+  children,
 }: {
   text: string
-  label: string
+  children: ReactNode
 }) => {
   const { isPending, handler } = useCopyBtn({ text })
 
   return (
     <DropdownMenuItem disabled={isPending} onClick={handler}>
       {isPending ? <Loader2Icon className="animate-spin" /> : <CopyIcon />}
-      {label}
+      {children}
     </DropdownMenuItem>
   )
 }
