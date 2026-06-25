@@ -15,6 +15,8 @@ export const readableValidFileTypes = [
   ...new Set(Object.values(validMimeTypes)),
 ]
 
+export const validMimeTypesArray = Object.keys(validMimeTypes)
+
 export const fileZodSchema = z
   .instanceof(File, {
     error: 'فایلی انتخاب نشده است.',
@@ -28,3 +30,5 @@ export const fileZodSchema = z
   .refine((file) => file.type in validMimeTypes, {
     error: 'فرمت فایل مجاز نیست.',
   })
+
+export const filesZodSchema = z.array(fileZodSchema)

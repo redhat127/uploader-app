@@ -1,5 +1,4 @@
 import { MyFiles } from '#/components/file/my-files'
-import { CardLayout } from '#/components/layout/card-layout'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/components/ui/tabs'
 import { Uploader } from '#/components/upload/uploader'
 import { useState } from 'react'
@@ -14,18 +13,13 @@ export const UploadFiles = () => {
           <TabsTrigger value="my-files">فایل های من</TabsTrigger>
           <TabsTrigger value="upload-file">آپلود فایل</TabsTrigger>
         </TabsList>
-        <TabsContent value="my-files">
-          <CardLayout
-            title={<h1>فایل های من</h1>}
-            description="در اینجا می توانید فایل های خود را مشاهده کنید."
-          >
-            <MyFiles />
-          </CardLayout>
+        <TabsContent value="my-files" className="space-y-4 py-2">
+          <h1 className="text-xl font-bold">فایل های من</h1>
+          <MyFiles />
         </TabsContent>
-        <TabsContent value="upload-file">
-          <CardLayout title={<h1>آپلود فایل</h1>}>
-            <Uploader changeTab={(value) => setTab(value)} />
-          </CardLayout>
+        <TabsContent value="upload-file" className="space-y-4 py-2">
+          <h1 className="text-xl font-bold">آپلود فایل</h1>
+          <Uploader />
         </TabsContent>
       </Tabs>
     </div>

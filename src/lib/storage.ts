@@ -4,9 +4,3 @@ export function buildContentDisposition(originalName: string) {
 
   return `inline; filename="${asciiFallback}"; filename*=UTF-8''${encoded}`
 }
-
-export const fileMimePersianTranslation = (mime: string) => {
-  if (mime.startsWith('image/')) return 'عکس'
-
-  return 'نامعلوم'
-}

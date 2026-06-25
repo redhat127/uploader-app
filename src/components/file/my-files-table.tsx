@@ -1,5 +1,4 @@
-import { Button } from '#/components/ui/button'
-import { fileMimePersianTranslation } from '#/lib/storage'
+import { persianFileDate, persianFileSize, persianFileType } from '#/lib/file'
 import type { File } from '#/serverfn/file'
 import {
   Table,
@@ -9,9 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { CopyIcon, Loader2Icon } from 'lucide-react'
-import { useState } from 'react'
-import { toast } from 'sonner'
+import { CopyBtn } from '../copy-btn'
 import { DeleteFile } from './delete-file'
 
 export const MyFilesTable = ({ files }: { files: File[] }) => {
@@ -51,49 +48,25 @@ const MyFilesTableHeader = () => {
 }
 
 const MyFilesTableBodyRow = ({ file }: { file: File }) => {
-  const [copyAddressPending, setCopyAddressPending] = useState(false)
-
   return (
     <TableRow>
       <TableCell className="min-w-0 truncate">{file.originalName}</TableCell>
       <TableCell className="hidden min-w-0 truncate sm:table-cell">
-        {fileMimePersianTranslation(file.mime)}
+        {persianFileType(file.mime)}
       </TableCell>
       <TableCell className="hidden truncate text-right sm:table-cell" dir="ltr">
-        {(Number(file.sizeBytes) / 1024).toFixed(2)} KB
+        {persianFileSize(Number(file.sizeBytes))}
       </TableCell>
       <TableCell className="hidden whitespace-normal md:table-cell">
-        {new Date(file.createdAt).toLocaleDateString('fa-IR')}
+        {persianFileDate(file.createdAt)}
       </TableCell>
       <TableCell className="hidden text-center md:table-cell">
-        <Button
-          type="button"
-          disabled={copyAddressPending}
-          size="icon"
-          variant="outline"
-          title="کپی"
-          onClick={async () => {
-            try {
-              setCopyAddressPending(true)
-              await window.navigator.clipboard.writeText(
-                new URL(
-                  `/api/file/${file.name}`,
-                  window.location.href,
-                ).toString(),
-              )
-              toast.success('کپی شد.')
-            } catch {
-            } finally {
-              setCopyAddressPending(false)
-            }
-          }}
-        >
-          {copyAddressPending ? (
-            <Loader2Icon className="animate-spin" />
-          ) : (
-            <CopyIcon />
-          )}
-        </Button>
+        <CopyBtn
+          text={new URL(
+            `/api/file/${file.name}`,
+            window.location.href,
+          ).toString()}
+        />
       </TableCell>
       <TableCell className="text-center">
         <DeleteFile fileName={file.name} />
