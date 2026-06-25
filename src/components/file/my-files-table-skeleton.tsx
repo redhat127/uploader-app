@@ -35,6 +35,9 @@ const MyFilesTableSkeletonHeader = () => {
           کپی آدرس
         </TableHead>
         <TableHead className="hidden w-14 text-center sm:table-cell">
+          دانلود
+        </TableHead>
+        <TableHead className="hidden w-14 text-center sm:table-cell">
           حذف
         </TableHead>
         <TableHead className="w-14 text-center sm:hidden">عملیات</TableHead>
@@ -48,6 +51,9 @@ const MyFilesTableSkeletonBodyRow = () => {
     <TableRow>
       <TableCell className="min-w-0">
         <Skeleton className="h-4 w-[70%]" />
+      </TableCell>
+      <TableCell className="hidden text-center sm:table-cell">
+        <Skeleton className="mx-auto size-8 rounded-full" />
       </TableCell>
       <TableCell className="hidden text-center sm:table-cell">
         <Skeleton className="mx-auto size-8 rounded-full" />
