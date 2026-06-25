@@ -7,6 +7,7 @@ import { requireAuthApiMiddleware } from '#/middleware/require-auth'
 import { fileZodSchema } from '#/zod-schema/file'
 import { createFileRoute } from '@tanstack/react-router'
 import { fileTypeFromBuffer } from 'file-type'
+import { imageSize } from 'image-size'
 import { nanoid } from 'nanoid'
 import sanitize from 'sanitize-filename'
 
@@ -45,6 +46,10 @@ export const Route = createFileRoute('/api/file')({
             )
           }
 
+          const imageDimensions = detected.mime.startsWith('image/')
+            ? imageSize(buffer)
+            : null
+
           const fileName = `${nanoid()}.${detected.ext}`
 
           await saveFile(fileName, buffer)
@@ -55,6 +60,9 @@ export const Route = createFileRoute('/api/file')({
             mime: detected.mime,
             storage: env.STORAGE_NAME,
             userId,
+            imageDimension: imageDimensions
+              ? { width: imageDimensions.width, height: imageDimensions.height }
+              : null,
             sizeBytes: BigInt(file.size),
           })
 

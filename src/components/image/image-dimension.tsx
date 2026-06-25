@@ -1,18 +1,20 @@
 import { useImageDimensions } from '#/hooks/use-image-dimensions'
 
-export const ImageDimension = ({ file }: { file: File }) => {
-  const imageDimension = useImageDimensions(file)
+export type ImageDimensionProps =
+  | { file: File; imageDimensions?: never }
+  | { file?: never; imageDimensions: { width: number; height: number } }
 
-  return (
+export const ImageDimension = (props: ImageDimensionProps) => {
+  const computedDimension = useImageDimensions(props.file)
+
+  const imageDimension = props.imageDimensions ?? computedDimension
+
+  return !imageDimension ? null : (
     <p>
       ابعاد عکس :{' '}
-      {imageDimension ? (
-        <span dir="ltr">
-          {imageDimension.width} x {imageDimension.height}
-        </span>
-      ) : (
-        <span className="animate-pulse">صبر کنید...</span>
-      )}
+      <span dir="ltr">
+        {imageDimension.width} x {imageDimension.height}
+      </span>
     </p>
   )
 }

@@ -1,6 +1,13 @@
 import { validStorageName } from '#/lib/storage.server'
 import { sql } from 'drizzle-orm'
-import { bigint, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import {
+  bigint,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core'
 import { userTable } from './auth-schema'
 
 export const fileTable = pgTable('file', {
@@ -14,9 +21,15 @@ export const fileTable = pgTable('file', {
     .notNull()
     .references(() => userTable.id, { onDelete: 'cascade' }),
   mime: text('mime').notNull(),
+  imageDimension: jsonb('image_dimensions').$type<{
+    width: number
+    height: number
+  }>(),
   sizeBytes: bigint('size_bytes', { mode: 'bigint' }).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at')
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),

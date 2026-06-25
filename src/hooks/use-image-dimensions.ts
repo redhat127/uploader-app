@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 
-export function useImageDimensions(file: File) {
+export function useImageDimensions(file: File | undefined) {
   const [dimensions, setDimensions] = useState<{
     width: number
     height: number
   } | null>(null)
 
   useEffect(() => {
-    if (!file.type.startsWith('image/')) {
+    if (!file || !file.type.startsWith('image/')) {
       setDimensions(null)
       return
     }

@@ -1,5 +1,10 @@
-import { persianFileDate, persianFileSize, persianFileType } from '#/lib/file'
-import type { File } from '#/serverfn/file'
+import { CopyBtn, CopyBtnDropdownMenuItem } from '#/components/copy-btn'
+import { ImageDimension } from '#/components/image/image-dimension'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '#/components/ui/dropdown-menu'
 import {
   Table,
   TableBody,
@@ -7,13 +12,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { CopyBtn } from '../copy-btn'
-import { DeleteFile } from './delete-file'
+} from '#/components/ui/table'
+import type { File } from '#/serverfn/file'
+import { EllipsisVertical } from 'lucide-react'
+import { DeleteFileBtn, DeleteFileDropdownMenuItem } from './delete-file-btn'
+import { FileDetailsBtn, FileDetailsDropdownMenuItem } from './file-details'
 
 export const MyFilesTable = ({ files }: { files: File[] }) => {
   return (
-    <Table className="w-full table-fixed">
+    <Table className="table-fixed">
       <MyFilesTableHeader />
       <TableBody>
         {files.map((file) => {
@@ -28,48 +35,67 @@ const MyFilesTableHeader = () => {
   return (
     <TableHeader>
       <TableRow>
-        <TableHead className="w-auto">نام</TableHead>
-        <TableHead className="hidden sm:table-cell sm:w-[18%] md:w-[14%]">
-          نوع فایل
+        <TableHead>نام</TableHead>
+        <TableHead className="hidden w-14 text-center sm:table-cell">
+          جزئیات
         </TableHead>
-        <TableHead className="hidden sm:table-cell sm:w-[17%] md:w-[14%]">
-          حجم
+        <TableHead className="hidden w-20 text-center sm:table-cell">
+          کپی آدرس
         </TableHead>
-        <TableHead className="hidden whitespace-normal md:table-cell md:w-[18%]">
-          ایجاد شده در
+        <TableHead className="hidden w-14 text-center sm:table-cell">
+          حذف
         </TableHead>
-        <TableHead className="hidden w-12 md:table-cell md:text-center">
-          آدرس
-        </TableHead>
-        <TableHead className="w-12 text-center">حذف</TableHead>
+        <TableHead className="w-14 text-center sm:hidden">عملیات</TableHead>
       </TableRow>
     </TableHeader>
   )
 }
 
 const MyFilesTableBodyRow = ({ file }: { file: File }) => {
+  const sharedFileDetailsProps = {
+    fileName: file.originalName,
+    fileType: file.mime,
+    fileSize: Number(file.sizeBytes),
+    fileDate: file.createdAt,
+    fileDateType: 'createdAt' as const,
+  }
+
+  const imageDimensions = file.imageDimension && (
+    <ImageDimension imageDimensions={file.imageDimension} />
+  )
+
+  const textForCopyBtn = new URL(
+    `/api/file/${file.name}`,
+    window.location.href,
+  ).toString()
+
   return (
     <TableRow>
       <TableCell className="min-w-0 truncate">{file.originalName}</TableCell>
-      <TableCell className="hidden min-w-0 truncate sm:table-cell">
-        {persianFileType(file.mime)}
+      <TableCell className="hidden text-center sm:table-cell">
+        <FileDetailsBtn {...sharedFileDetailsProps} noTooltip>
+          {imageDimensions}
+        </FileDetailsBtn>
       </TableCell>
-      <TableCell className="hidden truncate text-right sm:table-cell" dir="ltr">
-        {persianFileSize(Number(file.sizeBytes))}
+      <TableCell className="hidden text-center sm:table-cell">
+        <CopyBtn text={textForCopyBtn} noTooltip />
       </TableCell>
-      <TableCell className="hidden whitespace-normal md:table-cell">
-        {persianFileDate(file.createdAt)}
+      <TableCell className="hidden text-center sm:table-cell">
+        <DeleteFileBtn fileName={file.name} />
       </TableCell>
-      <TableCell className="hidden text-center md:table-cell">
-        <CopyBtn
-          text={new URL(
-            `/api/file/${file.name}`,
-            window.location.href,
-          ).toString()}
-        />
-      </TableCell>
-      <TableCell className="text-center">
-        <DeleteFile fileName={file.name} />
+      <TableCell className="text-center sm:hidden">
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <EllipsisVertical />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <FileDetailsDropdownMenuItem {...sharedFileDetailsProps}>
+              {imageDimensions}
+            </FileDetailsDropdownMenuItem>
+            <CopyBtnDropdownMenuItem text={textForCopyBtn} label="کپی آدرس" />
+            <DeleteFileDropdownMenuItem fileName={file.name} />
+          </DropdownMenuContent>
+        </DropdownMenu>
       </TableCell>
     </TableRow>
   )

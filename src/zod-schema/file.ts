@@ -9,6 +9,7 @@ export const validMimeTypes = {
   'image/webp': 'WebP',
   'image/gif': 'GIF',
   'image/avif': 'AVIF',
+  'application/pdf': 'PDF',
 } as const
 
 export const readableValidFileTypes = [

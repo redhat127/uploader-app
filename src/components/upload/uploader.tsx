@@ -6,7 +6,7 @@ import {
   validMimeTypesArray,
 } from '#/zod-schema/file'
 import { PlusIcon, UploadCloudIcon } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { SelectedFileType } from '../file/selected-file'
 import { SelectedFiles } from '../file/selected-files'
 
@@ -21,7 +21,13 @@ function mergeUniqueByName(
   return [...prev, ...filteredNext]
 }
 
-export const Uploader = () => {
+export const Uploader = ({
+  toBeUploadedCounts,
+  changeToBeUploadedCounts,
+}: {
+  toBeUploadedCounts: number
+  changeToBeUploadedCounts: (value: number) => void
+}) => {
   const [selectedFiles, setSelectedFiles] = useState<SelectedFileType[]>([])
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -54,6 +60,24 @@ export const Uploader = () => {
       return prevSelectedFiles.filter((file) => file.name !== name)
     })
   }
+
+  useEffect(() => {
+    changeToBeUploadedCounts(selectedFiles.length)
+  }, [changeToBeUploadedCounts, selectedFiles.length])
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (toBeUploadedCounts > 0) {
+        e.preventDefault()
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [toBeUploadedCounts])
 
   return (
     <>

@@ -9,13 +9,13 @@ export const persianFileType = (mime: string): string => {
   if (mime.startsWith('audio/')) return 'صدا'
 
   // Text
-  if (mime === 'text/plain') return 'فایل متنی'
-  if (mime === 'text/csv') return 'فایل CSV'
-  if (mime === 'text/html') return 'فایل HTML'
-  if (mime.startsWith('text/')) return 'فایل متنی'
+  if (mime === 'text/plain') return 'متنی'
+  if (mime === 'text/csv') return 'CSV'
+  if (mime === 'text/html') return 'HTML'
+  if (mime.startsWith('text/')) return 'متنی'
 
   // PDF
-  if (mime === 'application/pdf') return 'فایل PDF'
+  if (mime === 'application/pdf') return 'PDF'
 
   // Microsoft Word
   if (
@@ -23,14 +23,14 @@ export const persianFileType = (mime: string): string => {
     mime ===
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   )
-    return 'فایل ورد'
+    return 'WORD'
 
   // Microsoft Excel
   if (
     mime === 'application/vnd.ms-excel' ||
     mime === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   )
-    return 'فایل اکسل'
+    return 'اکسل'
 
   // Microsoft PowerPoint
   if (
@@ -38,7 +38,7 @@ export const persianFileType = (mime: string): string => {
     mime ===
       'application/vnd.openxmlformats-officedocument.presentationml.presentation'
   )
-    return 'فایل پاورپوینت'
+    return 'پاورپوینت'
 
   // Executables
   if (
@@ -48,7 +48,7 @@ export const persianFileType = (mime: string): string => {
     mime === 'application/exe' ||
     mime === 'application/x-exe'
   )
-    return 'فایل اجرایی'
+    return 'اجرایی'
 
   // Archives
   if (
@@ -59,14 +59,14 @@ export const persianFileType = (mime: string): string => {
     mime === 'application/x-tar' ||
     mime === 'application/gzip'
   )
-    return 'فایل فشرده'
+    return 'فشرده'
 
   // JSON / XML
-  if (mime === 'application/json') return 'فایل JSON'
-  if (mime === 'application/xml' || mime === 'text/xml') return 'فایل XML'
+  if (mime === 'application/json') return 'JSON'
+  if (mime === 'application/xml' || mime === 'text/xml') return 'XML'
 
   // Fonts
-  if (mime.startsWith('font/') || mime.includes('font')) return 'فایل فونت'
+  if (mime.startsWith('font/') || mime.includes('font')) return 'فونت'
 
   // Fallback
   return 'نامعلوم'
@@ -90,13 +90,8 @@ export const persianFileSize = (bytes: number): string => {
   return `${formatted} ${units[exponent]}`
 }
 
-export const persianFileDate = (
-  fileDate: number | Date,
-  withTime = false,
-): string => {
+export const persianFileDate = (fileDate: number | Date): string => {
   const date = new Date(fileDate)
 
-  return !withTime
-    ? `${date.toLocaleDateString('fa-IR')}`
-    : `${date.toLocaleDateString('fa-IR')} ، ${date.toLocaleTimeString('fa-IR')}`
+  return `${date.toLocaleDateString('fa-IR')} ، ${date.toLocaleTimeString('fa-IR')}`
 }
