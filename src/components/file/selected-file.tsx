@@ -106,7 +106,7 @@ export const SelectedFile = ({
               <XCircleIcon />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>حذف فایل</TooltipContent>
+          <TooltipContent>حذف فایل از لیست</TooltipContent>
         </Tooltip>
       </div>
     </div>
