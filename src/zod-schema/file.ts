@@ -10,6 +10,7 @@ export const validMimeTypes = {
   'image/gif': 'GIF',
   'image/avif': 'AVIF',
   'application/pdf': 'PDF',
+  'video/mp4': 'MP4',
 } as const
 
 export const readableValidFileTypes = [
