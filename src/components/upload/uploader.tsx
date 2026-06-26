@@ -7,6 +7,7 @@ import {
 } from '#/zod-schema/file'
 import { PlusIcon, UploadCloudIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 import type { SelectedFileType } from '../file/selected-file'
 import { SelectedFiles } from '../file/selected-files'
 
@@ -22,13 +23,15 @@ function mergeUniqueByName(
 }
 
 export const Uploader = ({
-  toBeUploadedCounts,
-  changeToBeUploadedCounts,
+  setToBeUploadedCounts,
 }: {
-  toBeUploadedCounts: number
-  changeToBeUploadedCounts: (value: number) => void
+  setToBeUploadedCounts: Dispatch<SetStateAction<number>>
 }) => {
   const [selectedFiles, setSelectedFiles] = useState<SelectedFileType[]>([])
+
+  const toBeUploadedCounts = selectedFiles.filter(
+    (selectedFile) => !selectedFile.uploaded,
+  ).length
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
@@ -43,10 +46,13 @@ export const Uploader = ({
   const selectFiles = (files: File[] | FileList | null) => {
     if (!files?.length) return
 
-    const pickedFiles = [...files].map((file) => ({
-      name: file.name,
-      file,
-    }))
+    const pickedFiles = [...files].map(
+      (file): SelectedFileType => ({
+        name: file.name,
+        file,
+        uploaded: false,
+      }),
+    )
 
     setSelectedFiles((prevSelectedFiles) => {
       return mergeUniqueByName(prevSelectedFiles, pickedFiles)
@@ -61,9 +67,18 @@ export const Uploader = ({
     })
   }
 
+  const markFileUploadCompleted = (fileName: string) => {
+    setSelectedFiles((prevSelectedFiles) => {
+      return prevSelectedFiles.map((prevSelectedFile) => {
+        if (prevSelectedFile.name !== fileName) return prevSelectedFile
+        return { ...prevSelectedFile, uploaded: true }
+      })
+    })
+  }
+
   useEffect(() => {
-    changeToBeUploadedCounts(selectedFiles.length)
-  }, [changeToBeUploadedCounts, selectedFiles.length])
+    setToBeUploadedCounts(toBeUploadedCounts)
+  }, [toBeUploadedCounts])
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -164,6 +179,7 @@ export const Uploader = ({
           <SelectedFiles
             selectedFiles={selectedFiles}
             removeFile={removeFile}
+            markFileUploadCompleted={markFileUploadCompleted}
           />
         )}
       </div>

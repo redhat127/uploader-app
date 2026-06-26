@@ -1,6 +1,6 @@
 import { ImageDimension } from '#/components/image/image-dimension'
 import { ImagePreview } from '#/components/image/image-preview'
-import { Button } from '#/components/ui/button'
+import { Button, buttonVariants } from '#/components/ui/button'
 import {
   Tooltip,
   TooltipContent,
@@ -12,21 +12,28 @@ import { fileZodSchema } from '#/zod-schema/file'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { AxiosError } from 'axios'
 import axios from 'axios'
-import { Loader2Icon, UploadCloudIcon, XCircleIcon } from 'lucide-react'
+import {
+  CheckIcon,
+  Loader2Icon,
+  UploadCloudIcon,
+  XCircleIcon,
+} from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { FileDetailsBtn } from './file-details'
 
-export type SelectedFileType = { name: string; file: File }
+export type SelectedFileType = { name: string; file: File; uploaded: boolean }
 
-type UploadState = 'idle' | 'uploading'
+type UploadState = 'idle' | 'uploading' | 'completed'
 
 export const SelectedFile = ({
   selectedFile,
   removeFile,
+  markFileUploadCompleted,
 }: {
   selectedFile: SelectedFileType
   removeFile: (name: string) => void
+  markFileUploadCompleted: (fileName: string) => void
 }) => {
   const [validationPassed, setValidationPassed] = useState(false)
   const [validationError, setValidationError] = useState<string | null>(null)
@@ -63,7 +70,7 @@ export const SelectedFile = ({
             selectedFile={selectedFile}
             uploadState={uploadState}
             changeUploadState={changeUploadState}
-            removeFile={removeFile}
+            markFileUploadCompleted={markFileUploadCompleted}
           />
         )}
         {validationPassed && (
@@ -110,12 +117,12 @@ const StartUpload = ({
   selectedFile,
   uploadState,
   changeUploadState,
-  removeFile,
+  markFileUploadCompleted,
 }: {
   selectedFile: SelectedFileType
   uploadState: UploadState
   changeUploadState: (value: UploadState) => void
-  removeFile: (name: string) => void
+  markFileUploadCompleted: (fileName: string) => void
 }) => {
   const { handler: axiosErrorHandler } = useAxiosErrorHandler()
 
@@ -141,7 +148,9 @@ const StartUpload = ({
       return data
     },
     onSuccess() {
-      removeFile(selectedFile.name)
+      changeUploadState('completed')
+
+      markFileUploadCompleted(selectedFile.name)
 
       toast.success(successMsg['fileUploaded'])
 
@@ -151,34 +160,47 @@ const StartUpload = ({
       })
     },
     async onError(e) {
-      await axiosErrorHandler(e)
-    },
-    onSettled() {
       changeUploadState('idle')
+
+      await axiosErrorHandler(e)
     },
   })
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button
-          type="button"
-          disabled={uploadState === 'uploading'}
-          size="icon"
-          onClick={() => {
-            const formData = new FormData()
-            formData.set('file', selectedFile.file)
+        {uploadState === 'idle' ? (
+          <Button
+            type="button"
+            size="icon"
+            onClick={() => {
+              const formData = new FormData()
+              formData.set('file', selectedFile.file)
 
-            mutation.mutate({ formData })
-          }}
-        >
-          {uploadState === 'idle' && <UploadCloudIcon />}
-          {uploadState === 'uploading' && (
-            <Loader2Icon className="animate-spin" />
-          )}
-        </Button>
+              mutation.mutate({ formData })
+            }}
+          >
+            <UploadCloudIcon />
+          </Button>
+        ) : (
+          <div
+            className={buttonVariants({
+              variant: 'default',
+              size: 'icon',
+            })}
+          >
+            {uploadState === 'uploading' && (
+              <Loader2Icon className="animate-spin" />
+            )}
+            {uploadState === 'completed' && <CheckIcon />}
+          </div>
+        )}
       </TooltipTrigger>
-      <TooltipContent>شروع آپلود</TooltipContent>
+      <TooltipContent>
+        {uploadState === 'idle' && 'شروع آپلود'}
+        {uploadState === 'uploading' && 'در حال آپلود...'}
+        {uploadState === 'completed' && 'آپلود شد'}
+      </TooltipContent>
     </Tooltip>
   )
 }

@@ -9,10 +9,6 @@ export const UploadFiles = () => {
   const [toBeUploadedCounts, setToBeUploadedCounts] = useState(0)
   const [pendingLeaveOpen, setPendingLeaveOpen] = useState(false)
 
-  const changeToBeUploadedCounts = (value: number) => {
-    setToBeUploadedCounts(value)
-  }
-
   const handleValueChange = (value: string) => {
     if (value === 'my-files' && toBeUploadedCounts > 0) {
       setPendingLeaveOpen(true)
@@ -42,10 +38,7 @@ export const UploadFiles = () => {
         </TabsContent>
         <TabsContent value="upload-file" className="space-y-4 py-2">
           <h1 className="text-xl font-bold">آپلود فایل</h1>
-          <Uploader
-            toBeUploadedCounts={toBeUploadedCounts}
-            changeToBeUploadedCounts={changeToBeUploadedCounts}
-          />
+          <Uploader setToBeUploadedCounts={setToBeUploadedCounts} />
         </TabsContent>
       </Tabs>
 
