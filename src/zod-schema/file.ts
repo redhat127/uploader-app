@@ -1,6 +1,6 @@
 import z from 'zod'
 
-export const maxFileSizeMB = 10
+export const maxFileSizeMB = 50
 export const maxFileSizeBytes = maxFileSizeMB * 1024 * 1024
 
 export const validMimeTypes = {
